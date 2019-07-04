@@ -33,7 +33,7 @@ public final class Constants {
     }
 
     public static final String PACKAGE_NAME = "uk.ac.sussex.wear.android.datalogger";
-    public static final int ADMIN_CODE = 4004;
+    public static final int ADMIN_CODE = 0000;
 
     /**
      * Defines a shared preference that stores the data collection object. It's empty when
