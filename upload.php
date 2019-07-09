@@ -1,5 +1,6 @@
 <?php
-$target_dir = "../uploads/";
+
+$target_dir = "uploads/";
 foreach ($_FILES as $file) {
   if ($file['type'] !== 'text/plain' && $file['type'] !== 'video/3gp') {
     continue; // ignore non text or 3gp files
@@ -12,11 +13,12 @@ foreach ($_FILES as $file) {
     echo "ERR:${error}:${name}\r\n";
     continue;
   }
-
+  
   if (move_uploaded_file($file['tmp_name'], $target_dir . $name)) {
     echo "OK:${error}:${name}\r\n";
   } else {
-     echo "ERR:UPLOAD_ERR_MOVE:${name}\r\n";
+    echo "ERR:UPLOAD_ERR_MOVE:${name}\r\n";
   }
 }
+
 ?>
