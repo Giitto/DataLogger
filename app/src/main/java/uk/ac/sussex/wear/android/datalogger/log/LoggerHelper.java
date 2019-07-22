@@ -31,6 +31,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
 
 
 /**
@@ -85,7 +89,7 @@ public final class LoggerHelper {
             System.out.println("File");
             String data = readFile(lastFile);
             System.out.println(data);
-            String piot = "http://172.20.10.6:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
+            connexionPIOT();
             System.out.println("======================================================");
         }
 
@@ -112,6 +116,25 @@ public final class LoggerHelper {
             e.printStackTrace();
         }
         return myData;
+    }
+
+    private static void connexionPIOT() {
+        String piot = "http://172.20.10.6:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
+        URL url = null;
+        try {
+            url = new URL(piot);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        try {
+            HttpURLConnection co = (HttpURLConnection) Objects.requireNonNull(url).openConnection();
+            co.setDoOutput(true);
+            co.setRequestMethod("POST");
+            co.setRequestProperty("Accept-Charset", "UTF-8");
+            co.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
