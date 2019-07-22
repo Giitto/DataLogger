@@ -31,8 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 
 /**
  * Created by fjordonez on 13/10/16.
@@ -42,7 +41,7 @@ public final class LoggerHelper {
 
     private static final String TAG = LoggerHelper.class.getSimpleName();
 
-    public static File defineLogFilename(Context context, String path, String baseFilename, String extension, boolean toAppend, long nanosOffset){
+    public static File defineLogFilename(Context context, String path, String baseFilename, String extension, boolean toAppend, long nanosOffset) {
 
         // Get the absolute path to the directory on the primary shared/external storage device
         // where the application can place persistent files.
@@ -75,17 +74,19 @@ public final class LoggerHelper {
                 }
                 lastFile = file;
             }
-            // Get last file and send it to Thingboard
-            System.out.println("======================================================");
-            System.out.println("File");
-            String data = readFile(lastFile);
-            System.out.println(data);
-
             if (toAppend){
                 baseFilename = baseFilename + "__" + nanoTimeString + "__" + lastIndex + "." + extension;
             } else {
                 baseFilename = baseFilename + "__" + nanoTimeString + "__" + (lastIndex+1) + "." + extension;
             }
+
+            // Get last file and send it to Thingboard
+            System.out.println("======================================================");
+            System.out.println("File");
+            String data = readFile(lastFile);
+            System.out.println(data);
+            String piot = "http://172.20.10.6:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
+            System.out.println("======================================================");
         }
 
         return new File(absoluteDir.getAbsolutePath() + File.separator + baseFilename);
@@ -112,5 +113,5 @@ public final class LoggerHelper {
         }
         return myData;
     }
-
 }
+
