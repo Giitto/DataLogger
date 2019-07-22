@@ -76,8 +76,6 @@ public final class LoggerHelper {
                 lastFile = file;
             }
             // Get last file and send it to Thingboard
-            int indexToOpen = lastIndex - 1;
-            if (!toAppend) { indexToOpen++; }
             System.out.println("======================================================");
             System.out.println("File");
             String data = readFile(lastFile);
