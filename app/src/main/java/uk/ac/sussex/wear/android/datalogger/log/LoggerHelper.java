@@ -43,7 +43,12 @@ public final class LoggerHelper {
         if (!absoluteDir.exists()){
             absoluteDir.mkdirs();
         }
-
+// Get last file and send it to Thingboard
+                    int indexToOpen = lastIndex - 1;
+                    if (!toAppend) { indexToOpen++; }
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                    System.out.println("======================================================");
+                    System.out.println(content);
         String nanoTimeString = Long.toString(SystemClock.elapsedRealtimeNanos() + nanosOffset);
         File[] files = absoluteDir.listFiles();
         if (files.length == 0) { // In case there are no files in the dir
@@ -64,6 +69,14 @@ public final class LoggerHelper {
                             nanoTimeString = items[1];
                         }
                     }
+
+                    // Get last file and send it to Thingboard
+                    int indexToOpen = lastIndex - 1;
+                    if (!toAppend) { indexToOpen++; }
+                    //String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                    System.out.println("======================================================");
+                    System.out.println("File");
+
                 }
             }
             if (toAppend){
