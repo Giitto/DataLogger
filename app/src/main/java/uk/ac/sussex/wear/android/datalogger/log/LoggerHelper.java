@@ -25,7 +25,14 @@ package uk.ac.sussex.wear.android.datalogger.log;
 import android.content.Context;
 import android.os.SystemClock;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by fjordonez on 13/10/16.
@@ -43,12 +50,7 @@ public final class LoggerHelper {
         if (!absoluteDir.exists()){
             absoluteDir.mkdirs();
         }
-// Get last file and send it to Thingboard
-                    int indexToOpen = lastIndex - 1;
-                    if (!toAppend) { indexToOpen++; }
-                    String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
-                    System.out.println("======================================================");
-                    System.out.println(content);
+
         String nanoTimeString = Long.toString(SystemClock.elapsedRealtimeNanos() + nanosOffset);
         File[] files = absoluteDir.listFiles();
         if (files.length == 0) { // In case there are no files in the dir
@@ -56,6 +58,7 @@ public final class LoggerHelper {
             baseFilename = baseFilename + "__" + nanoTimeString + "__0" + "." + extension;
         } else {
             int lastIndex = -1;
+            File lastFile = null;
             for (File file : files){
                 if (file.isFile()){
                     String[] items = file.getName().split("\\.")[0].split("__");
@@ -69,16 +72,17 @@ public final class LoggerHelper {
                             nanoTimeString = items[1];
                         }
                     }
-
-                    // Get last file and send it to Thingboard
-                    int indexToOpen = lastIndex - 1;
-                    if (!toAppend) { indexToOpen++; }
-                    //String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
-                    System.out.println("======================================================");
-                    System.out.println("File");
-
                 }
+                lastFile = file;
             }
+            // Get last file and send it to Thingboard
+            int indexToOpen = lastIndex - 1;
+            if (!toAppend) { indexToOpen++; }
+            System.out.println("======================================================");
+            System.out.println("File");
+            String data = readFile(lastFile);
+            System.out.println(data);
+
             if (toAppend){
                 baseFilename = baseFilename + "__" + nanoTimeString + "__" + lastIndex + "." + extension;
             } else {
@@ -87,6 +91,28 @@ public final class LoggerHelper {
         }
 
         return new File(absoluteDir.getAbsolutePath() + File.separator + baseFilename);
+    }
+
+    private static String readFile(File file)
+    {
+        String myData = "";
+        File myExternalFile = new File(String.valueOf(file));
+        try {
+            FileInputStream fis = new FileInputStream(myExternalFile);
+            DataInputStream in = new DataInputStream(fis);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+            String strLine;
+            while ((strLine = br.readLine()) != null) {
+                myData = myData + strLine + "\n";
+            }
+            br.close();
+            in.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return myData;
     }
 
 }
