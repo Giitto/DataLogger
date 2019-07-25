@@ -117,21 +117,5 @@ public final class LoggerHelper {
         return myData;
     }
 
-    private static void connexionPIOT() {
-        String piot = "http://192.168.43.231:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
-        URL url = null;
-        try {
-            url = new URL(piot);
-            HttpURLConnection co = (HttpURLConnection) Objects.requireNonNull(url).openConnection();
-            co.setDoOutput(true);
-            co.setRequestMethod("POST");
-            co.setRequestProperty("Accept-Charset", "UTF-8");
-            //co.connect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
 
