@@ -22,69 +22,74 @@
 
 package uk.ac.sussex.wear.android.datalogger;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class SendData {
+import android.content.Context;
+import android.os.AsyncTask;
 
-    String url;
-    URL urlObj;
-    HttpURLConnection conn;
 
-    public SendData(String url, URL urlObj, HttpURLConnection conn) throws IOException {
-        this.url = url;
-        this.urlObj = urlObj;
-        this.conn = conn;
+public class SendData extends AsyncTask<String, Integer, String> {
+
+    public SendData() {
     }
 
-    public String getUrl() {
-        return url;
-    }
+    @Override
+    protected String doInBackground(String... strings) {
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+        String accessToken = "aBmoz3kkHEhusXyjLegr";
+        String piot = "http://192.168.1.29:9090/api/v1/" + accessToken + "/telemetry";
 
-    public URL getUrlObj() {
-        return urlObj;
-    }
+        try {
 
-    public void setUrlObj(URL urlObj) {
-        this.urlObj = urlObj;
-    }
+            String params = "{\"data\": \"" + strings[0] + "\"}";
 
-    private static void connexionPIOT(String url, URL urlObj, HttpURLConnection conn){
+            URL urlObj = new URL(piot);
 
-        new SendData();
-
-        try{
-            url = "http://www.example.com/test.php";
-            urlObj = new URL(url);
-            conn = (HttpURLConnection) urlObj.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Accept-Charset", "UTF-8");
-
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
 
             conn.connect();
 
-            String paramsString = sbParams.toString();
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = params.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
 
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(paramsString);
-            wr.flush();
-            wr.close();
-        } catch (IOException e) {
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine = null;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                System.out.println(response.toString());
+            }
+
+
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
+
+        return "OK";
+
     }
 
-
-
-
+    protected void onPostExecute(Long result) {
+        System.out.println("Data sended !");
+    }
 
 }

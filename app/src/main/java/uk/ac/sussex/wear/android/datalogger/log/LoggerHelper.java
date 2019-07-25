@@ -24,7 +24,6 @@ package uk.ac.sussex.wear.android.datalogger.log;
 
 import android.content.Context;
 import android.os.SystemClock;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -35,6 +34,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
+
+import uk.ac.sussex.wear.android.datalogger.SendData;
 
 
 /**
@@ -84,13 +85,11 @@ public final class LoggerHelper {
                 baseFilename = baseFilename + "__" + nanoTimeString + "__" + (lastIndex+1) + "." + extension;
             }
 
-            // Get last file and send it to Thingboard
-            System.out.println("======================================================");
-            System.out.println("File");
+            // Send data to IoT Platform
             String data = readFile(lastFile);
-            System.out.println(data);
-            connexionPIOT();
-            System.out.println("======================================================");
+            new SendData().execute(data);
+
+
         }
 
         return new File(absoluteDir.getAbsolutePath() + File.separator + baseFilename);
@@ -119,19 +118,17 @@ public final class LoggerHelper {
     }
 
     private static void connexionPIOT() {
-        String piot = "http://172.20.10.6:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
+        String piot = "http://192.168.43.231:9090/ap1/v1/aBmoz3kkHEhusXyjLegr";
         URL url = null;
         try {
             url = new URL(piot);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
             HttpURLConnection co = (HttpURLConnection) Objects.requireNonNull(url).openConnection();
             co.setDoOutput(true);
             co.setRequestMethod("POST");
             co.setRequestProperty("Accept-Charset", "UTF-8");
-            co.connect();
+            //co.connect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
