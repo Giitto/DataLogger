@@ -48,10 +48,26 @@ public class SendData extends AsyncTask<String, Integer, String> {
 
         String accessToken = "aBmoz3kkHEhusXyjLegr";
         String piot = "http://192.168.1.29:9090/api/v1/" + accessToken + "/telemetry";
+        String location = strings[0];
+        String name = strings[1];
+        String data = strings[2];
 
         try {
 
-            String params = "{\"data\": \"" + strings[0] + "\"}";
+            String params = "{";
+
+            if (data != "") {
+
+                params += "\"" + location + "\": \"" + data + "\"";
+
+                if (name.equals("Battery")) {
+                    params += ", \"battery\": \"" + data.split(";")[3] + "\"";
+                    params += ", \"battery-temperature\": \"" + data.split(";")[4] + "\"";
+                }
+
+            }
+
+            params += "}";
 
             URL urlObj = new URL(piot);
 
