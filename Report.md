@@ -34,7 +34,7 @@ Nous avons utilisé ThingsBoard comme plateforme car il s'agit d'un outil open-s
 
 ## Configuration de l'application
 
-![App1](https://sourceforge.net/images/icon_linux.gif)
+![App1]()
 
 Tout d'abord, il faut spécifier l'adresse de la plateforme IoT directement dans le code source de l'application mobile, pour l'instant on n'a pas supprimer l'envoi des données à un serveur avec l'utilisation du script PHP. Au lancement de l'application sur un mobile, il faut appareiller les téléphones en BT à partir des réglages des téléphones avant de les connecter avec l'application. Ceci n'est pas indiqué dans la documentation de l'application. Par la suite, il faut activer la Data collection et le Label annotation.
 
